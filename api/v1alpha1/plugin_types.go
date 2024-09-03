@@ -30,7 +30,7 @@ type PluginSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Plugin. Edit plugin_types.go to remove/update
-	Plugin plugins.PluginReq	
+	Plugin plugins.PluginReq `json:"plugin"`
 }
 
 // PluginStatus defines the observed state of Plugin

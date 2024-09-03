@@ -30,7 +30,7 @@ type BoardSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Board. Edit board_types.go to remove/update
-	Board boards.Board 
+	Board boards.Board `json:"board"`
 }
 
 // BoardStatus defines the observed state of Board
