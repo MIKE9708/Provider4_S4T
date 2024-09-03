@@ -1,0 +1,27 @@
+# permissions for end users to edit plugins.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: s4t-provider
+    app.kubernetes.io/managed-by: kustomize
+  name: plugin-editor-role
+rules:
+- apiGroups:
+  - infrastructure.s4t.example.com
+  resources:
+  - plugins
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - infrastructure.s4t.example.com
+  resources:
+  - plugins/status
+  verbs:
+  - get

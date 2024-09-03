@@ -1,0 +1,69 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: boards.s4t.com
+spec:
+  group: s4t.com
+  names:
+    kind: Board
+    listKind: BoardList
+    plural: boards
+    singular: board
+    shortNames:
+    - bd
+  scope: Namespaced
+  versions:
+  - name: v1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            board:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                code:
+                  type: string
+                status:
+                  type: string
+                wstunIp:
+                  type: string
+                session:
+                  type: string
+                fleet:
+                  x-kubernetes-preserve-unknown-fields: true
+                lrVersion:
+                  type: string
+                connectivity:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                links:
+                  type: array
+                  items:
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                location:
+                  type: array
+                  items:
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+          status:
+            type: object
+            properties:
+              status:
+                type: string
+              UUID:
+                type: string
+    subresources:
+      status: {}
+    additionalPrinterColumns:
+    - name: Status
+      type: string
+      jsonPath: .status.status
+    - name: Agent
+      type: string

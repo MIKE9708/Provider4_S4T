@@ -1,0 +1,23 @@
+# permissions for end users to view boards.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: s4t-provider
+    app.kubernetes.io/managed-by: kustomize
+  name: board-viewer-role
+rules:
+- apiGroups:
+  - infrastructure.s4t.example.com
+  resources:
+  - boards
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - infrastructure.s4t.example.com
+  resources:
+  - boards/status
+  verbs:
+  - get
