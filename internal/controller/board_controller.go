@@ -27,11 +27,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
+
 const boardFinalizer = "board.openstack-fork.example.com/finalizer"
+
 // BoardReconciler reconciles a Board object
 type BoardReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme    *runtime.Scheme
 	S4tClient *s4t.Client
 }
 
@@ -50,18 +52,18 @@ type BoardReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.19.0/pkg/reconcile
 func (r *BoardReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
-	
+
 	boardCR := &infrastructurev1alpha1.Board{}
-	
+
 	if err := r.Get(ctx, req.NamespacedName, boardCR); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
-	} 
-	// If no UUID is provided means the 
-	// resource has to be created	
-	if boardCR.Status.UUID == "" {
-		return r.ReconcileCreate(ctx, boardCR)		
 	}
-	// If UUID is provided Board exist so 
+	// If no UUID is provided means the
+	// resource has to be created
+	if boardCR.Status.UUID == "" {
+		return r.ReconcileCreate(ctx, boardCR)
+	}
+	// If UUID is provided Board exist so
 	// Check if board should be deleted
 	if !controllerutil.ContainsFinalizer(boardCR, boardFinalizer) {
 		controllerutil.AddFinalizer(boardCR, boardFinalizer)
@@ -73,15 +75,15 @@ func (r *BoardReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	if !boardCR.DeletionTimestamp.IsZero() {
 		return r.ReconcileDelete(ctx, boardCR)
 	}
-	
+
 	// Board don't have to be deleted,
 	// so the board exist and has an ID
 	// test if board UUID exist
-	board_exist, err := boardCR.Spec.Board.GetBoardDetail(r.S4tClient, boardCR.Spec.Board.Uuid)
-	if (err != nil || board_exist.Uuid == "") {
+	board_exist, err := boardCR.Spec.Board.GetBoardDetail(r.S4tClient)
+	if err != nil || board_exist.Uuid == "" {
 		return ctrl.Result{}, err
 	}
-	
+
 	return r.ReconcileUpdate(ctx, boardCR)
 }
 
@@ -90,52 +92,53 @@ func (r *BoardReconciler) ReconcileCreate(ctx context.Context, boardCR *infrastr
 	board.Name = boardCR.Spec.Board.Name
 	board.Code = boardCR.Spec.Board.Code
 	board.Location = boardCR.Spec.Board.Location
-	
-	resp,err:= board.CreateBoard(r.S4tClient, board)
+
+	resp, err := board.CreateBoard(r.S4tClient)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
 
-	boardCR.Spec.Board = *resp 
+	boardCR.Spec.Board = resp
 	boardCR.Status.UUID = resp.Uuid
 	boardCR.Status.Status = resp.Status
 
-	if err := r.Update(ctx, boardCR); err != nil{
+	if err := r.Update(ctx, boardCR); err != nil {
 		return ctrl.Result{}, err
-	} 
+	}
 	return ctrl.Result{}, nil
 }
 
 func (r *BoardReconciler) ReconcileUpdate(ctx context.Context, boardCR *infrastructurev1alpha1.Board) (ctrl.Result, error) {
-	board := &boards.Board{Uuid: boardCR.Status.UUID}	
-	resp,err:= board.PatchBoard(r.S4tClient, board.Uuid, map[string]interface{}{"code":boardCR.Spec.Board.Code})
+	board := &boards.Board{Uuid: boardCR.Status.UUID}
+	resp, err := board.PatchBoard(r.S4tClient, map[string]interface{}{"code": boardCR.Spec.Board.Code})
 	if err != nil {
 		return ctrl.Result{}, err
 	}
 
-	boardCR.Spec.Board = *resp 
+	boardCR.Spec.Board = resp
 
-	if err := r.Update(ctx, boardCR); err != nil{
+	if err := r.Update(ctx, boardCR); err != nil {
 		return ctrl.Result{}, err
-	} 
+	}
 
 	return ctrl.Result{}, nil
 }
 
 func (r *BoardReconciler) ReconcileDelete(ctx context.Context, boardCR *infrastructurev1alpha1.Board) (ctrl.Result, error) {
-	board := &boards.Board{Uuid: boardCR.Status.UUID}	
-	if err:=board.DeleteBoard(r.S4tClient, board.Uuid); err != nil {
+	board := &boards.Board{Uuid: boardCR.Status.UUID}
+	if err := board.DeleteBoard(r.S4tClient); err != nil {
 		return ctrl.Result{}, err
 	}
-	
+
 	controllerutil.RemoveFinalizer(boardCR, boardFinalizer)
-	if err := r.Update(ctx, boardCR); err != nil{
+	if err := r.Update(ctx, boardCR); err != nil {
 		return ctrl.Result{}, err
-	} 
+	}
 
 	return ctrl.Result{}, nil
 
 }
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *BoardReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).

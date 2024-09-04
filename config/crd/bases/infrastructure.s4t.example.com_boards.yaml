@@ -1,0 +1,144 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.1
+  name: boards.infrastructure.s4t.example.com
+spec:
+  group: infrastructure.s4t.example.com
+  names:
+    kind: Board
+    listKind: BoardList
+    plural: boards
+    singular: board
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Board is the Schema for the boards API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: BoardSpec defines the desired state of Board
+            properties:
+              board:
+                description: Foo is an example field of Board. Edit board_types.go
+                  to remove/update
+                properties:
+                  agent:
+                    type: string
+                  code:
+                    type: string
+                  connectivity:
+                    properties:
+                      iface:
+                        type: string
+                      local_ip:
+                        type: string
+                      mac:
+                        type: string
+                    required:
+                    - iface
+                    - local_ip
+                    - mac
+                    type: object
+                  fleet:
+                    format: byte
+                    type: string
+                  links:
+                    items:
+                      properties:
+                        href:
+                          type: string
+                        rel:
+                          type: string
+                      required:
+                      - href
+                      - rel
+                      type: object
+                    type: array
+                  location:
+                    items:
+                      properties:
+                        altitude:
+                          type: string
+                        latitude:
+                          type: string
+                        longitude:
+                          type: string
+                        updated_at:
+                          format: byte
+                          type: string
+                      required:
+                      - altitude
+                      - latitude
+                      - longitude
+                      - updated_at
+                      type: object
+                    type: array
+                  lr_version:
+                    description: interface{} `json:"fleet"`
+                    type: string
+                  name:
+                    type: string
+                  session:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                  uuid:
+                    type: string
+                  wstun_ip:
+                    type: string
+                required:
+                - agent
+                - code
+                - connectivity
+                - location
+                - lr_version
+                - name
+                - session
+                - status
+                - type
+                - uuid
+                type: object
+            required:
+            - board
+            type: object
+          status:
+            description: |-
+              BoardStatus defines the observed state of Board
+              this are the fields visible in kubernetes
+            properties:
+              status:
+                description: |-
+                  INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+                  Important: Run "make" to regenerate code after modifying this file
+                type: string
+              uuid:
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

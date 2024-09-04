@@ -31,7 +31,7 @@ import (
 // PluginReconciler reconciles a Plugin object
 type PluginReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme    *runtime.Scheme
 	S4tClient *s4t.Client
 }
 
@@ -51,11 +51,11 @@ type PluginReconciler struct {
 func (r *PluginReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	pluginCR := &infrastructurev1alpha1.Plugin{}
 
-	if err:= r.Get(ctx, req.NamespacedName, pluginCR); err != nil{
+	if err := r.Get(ctx, req.NamespacedName, pluginCR); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 
-		}
-	
+	}
+
 	if !controllerutil.ContainsFinalizer(pluginCR, boardFinalizer) {
 		controllerutil.AddFinalizer(pluginCR, boardFinalizer)
 		if err := r.Update(ctx, pluginCR); err != nil {
@@ -67,44 +67,45 @@ func (r *PluginReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 		return r.ReconcileDelete(ctx, pluginCR)
 	}
 	plugin := &plugins.PluginReq{
-		Name: pluginCR.Spec.Plugin.Name,
+		Name:       pluginCR.Spec.Plugin.Name,
 		Parameters: pluginCR.Spec.Plugin.Parameters,
-		Code: pluginCR.Spec.Plugin.Code,
-		Version: pluginCR.Spec.Plugin.Version,
+		Code:       pluginCR.Spec.Plugin.Code,
+		Version:    pluginCR.Spec.Plugin.Version,
 	}
 	plugin_data := &plugins.Plugin{}
-	plugin_created, err := plugin_data.CreatePlugin(r.S4tClient, *plugin)  
-	
+	plugin_created, err := plugin_data.CreatePlugin(r.S4tClient, *plugin)
+
 	if err != nil {
 		return ctrl.Result{}, err
 	}
-	
+
 	// _ = log.FromContext(ctx)
 	pluginCR.Status.Name = plugin_created.Name
 	pluginCR.Status.Code = plugin_created.UUID
-	
+
 	if err := r.Status().Update(ctx, pluginCR); err != nil {
-        return ctrl.Result{}, err
-    }
+		return ctrl.Result{}, err
+	}
 
 	return ctrl.Result{}, nil
 }
 
 func (r *PluginReconciler) ReconcileDelete(ctx context.Context, pluginCR *infrastructurev1alpha1.Plugin) (ctrl.Result, error) {
-	plugin := &plugins.Plugin{UUID: pluginCR.Status.Code}	
-	if err:= plugin.DeletePlugin(r.S4tClient, plugin.UUID); err != nil {
+	plugin := &plugins.Plugin{UUID: pluginCR.Status.Code}
+	if err := plugin.DeletePlugin(r.S4tClient); err != nil {
 		return ctrl.Result{}, err
 	}
-	
+
 	controllerutil.RemoveFinalizer(pluginCR, boardFinalizer)
-	
-	if err := r.Update(ctx, pluginCR); err != nil{
+
+	if err := r.Update(ctx, pluginCR); err != nil {
 		return ctrl.Result{}, err
-	} 
+	}
 
 	return ctrl.Result{}, nil
 
 }
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *PluginReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).

@@ -32,7 +32,7 @@ import (
 // ServiceReconciler reconciles a Service object
 type ServiceReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme    *runtime.Scheme
 	S4tClient *s4t.Client
 }
 
@@ -52,12 +52,11 @@ type ServiceReconciler struct {
 func (r *ServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 	serviceCR := &infrastructurev1alpha1.Service{}
-	
-	if err:= r.Get(ctx, req.NamespacedName, serviceCR); err != nil{
+
+	if err := r.Get(ctx, req.NamespacedName, serviceCR); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 
-		}
-
+	}
 
 	if !controllerutil.ContainsFinalizer(serviceCR, boardFinalizer) {
 		controllerutil.AddFinalizer(serviceCR, boardFinalizer)
@@ -65,43 +64,44 @@ func (r *ServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 			return ctrl.Result{}, err
 		}
 	}
-	
+
 	if !serviceCR.DeletionTimestamp.IsZero() {
 		return r.ReconcileDelete(ctx, serviceCR)
 	}
 
 	service := &services.Service{
-		Name: serviceCR.Spec.Service.Name,
-		Port: serviceCR.Spec.Service.Port,
+		Name:     serviceCR.Spec.Service.Name,
+		Port:     serviceCR.Spec.Service.Port,
 		Protocol: serviceCR.Spec.Service.Protocol,
 	}
 
-	service_created, err := service.CreateService(r.S4tClient, *service)  
-	
+	service_created, err := service.CreateService(r.S4tClient, *service)
+
 	if err != nil {
 		return ctrl.Result{}, err
 	}
 	serviceCR.Status.Name = service_created.Name
 	serviceCR.Status.Port = string(service_created.Port)
-	
+
 	// TODO(user): your logic here
 
 	return ctrl.Result{}, nil
 }
 
 func (r *ServiceReconciler) ReconcileDelete(ctx context.Context, serviceCR *infrastructurev1alpha1.Service) (ctrl.Result, error) {
-	service := &services.Service{Uuid: serviceCR.Status.UUID}	
+	service := &services.Service{Uuid: serviceCR.Status.UUID}
 	if err := service.DeleteService(r.S4tClient, service.Uuid); err != nil {
 		return ctrl.Result{}, err
 	}
-	
+
 	controllerutil.RemoveFinalizer(serviceCR, boardFinalizer)
-	if err := r.Update(ctx, serviceCR); err != nil{
+	if err := r.Update(ctx, serviceCR); err != nil {
 		return ctrl.Result{}, err
-	} 
+	}
 
 	return ctrl.Result{}, nil
 }
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *ServiceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).

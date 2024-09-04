@@ -17,14 +17,15 @@ limitations under the License.
 package v1alpha1
 
 import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // BoardSpec defines the desired state of Board
+// +kubebuilder:object:generate=true
 type BoardSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
@@ -38,8 +39,8 @@ type BoardSpec struct {
 type BoardStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	Status string  `json:"status,omitempty"`
-	UUID string  `json:"uuid,omitempty"`
+	Status string `json:"status,omitempty"`
+	UUID   string `json:"uuid,omitempty"`
 }
 
 // +kubebuilder:object:root=true

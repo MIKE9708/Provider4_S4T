@@ -25,6 +25,7 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // PluginSpec defines the desired state of Plugin
+// +kubebuilder:object:generate=true
 type PluginSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
@@ -37,7 +38,7 @@ type PluginSpec struct {
 type PluginStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	Name string `json:"name"` 
+	Name string `json:"name"`
 	Code string `json:"code"`
 }
 

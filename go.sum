@@ -1,5 +1,13 @@
 github.com/MIKE9708/s4t-sdk-go v0.0.0-20240827143705-97db043b2b38 h1:ucqluoKxoFLzyvQ+KpLHyqo7R/PfDjnzMAcPQxPlnZQ=
 github.com/MIKE9708/s4t-sdk-go v0.0.0-20240827143705-97db043b2b38/go.mod h1:dccFztdv0tlX2jBw3z/i9RL2Vd/fXdGZIliApYEXrMw=
+github.com/MIKE9708/s4t-sdk-go v0.0.0-20240904090947-221c70f66641 h1:4QL8DszZ1GMjmnttURmycxbcrZWRP1xePyl4KojVq7I=
+github.com/MIKE9708/s4t-sdk-go v0.0.0-20240904090947-221c70f66641/go.mod h1:CSyOnfvwICiOq0VW2V13L9nDg0Bz09LzlXfTROYKNXs=
+github.com/MIKE9708/s4t-sdk-go v0.0.0-20240904142010-8da1bfa07fad h1:XAHqtmi152ffbdw3LcvYEYeub+lYhtZL1JUvIfZM7wI=
+github.com/MIKE9708/s4t-sdk-go v0.0.0-20240904142010-8da1bfa07fad/go.mod h1:CSyOnfvwICiOq0VW2V13L9nDg0Bz09LzlXfTROYKNXs=
+github.com/MIKE9708/s4t-sdk-go v0.0.0-20240904144442-fcbecd26739b h1:OGRDEKMIH3PH4oI7d1X+xg6LLHEr+KosFW1cdr6uIk4=
+github.com/MIKE9708/s4t-sdk-go v0.0.0-20240904144442-fcbecd26739b/go.mod h1:CSyOnfvwICiOq0VW2V13L9nDg0Bz09LzlXfTROYKNXs=
+github.com/MIKE9708/s4t-sdk-go v0.0.0-20240904145742-55d81af1ec57 h1:CiRVxVAur8cDgIlinQNKD4iQqTvSaRSyvh/Z6WYeBgY=
+github.com/MIKE9708/s4t-sdk-go v0.0.0-20240904145742-55d81af1ec57/go.mod h1:CSyOnfvwICiOq0VW2V13L9nDg0Bz09LzlXfTROYKNXs=
 github.com/antlr4-go/antlr/v4 v4.13.0 h1:lxCg3LAv+EUK6t1i0y1V6/SLeUi0eKEKdhQAlS8TVTI=
 github.com/antlr4-go/antlr/v4 v4.13.0/go.mod h1:pfChB/xh/Unjila75QW7+VU4TSnWnnk9UTnmpPaOR2g=
 github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a h1:idn718Q4B6AGu/h5Sxe66HYVdqdGu2l9Iebqhi/AEoA=

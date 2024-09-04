@@ -38,7 +38,6 @@ import (
 	infrastructurev1alpha1 "github.com/MIKE9708/Provider4S4T.git/api/v1alpha1"
 	"github.com/MIKE9708/Provider4S4T.git/internal/controller"
 	"github.com/MIKE9708/Provider4S4T.git/pkg/config"
-
 	// +kubebuilder:scaffold:imports
 )
 
@@ -145,15 +144,15 @@ func main() {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
-	
+
 	providerConfig, err := config.SetUpProvider()
-    if err != nil {
-        setupLog.Error(err, "unable to set up provider config")
-        os.Exit(1)
-    }
+	if err != nil {
+		setupLog.Error(err, "unable to set up provider config")
+		os.Exit(1)
+	}
 	if err = (&controller.BoardReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:    mgr.GetClient(),
+		Scheme:    mgr.GetScheme(),
 		S4tClient: providerConfig.S4tClient,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Board")
@@ -167,10 +166,9 @@ func main() {
 		os.Exit(1)
 	}
 	if err = (&controller.PluginReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:    mgr.GetClient(),
+		Scheme:    mgr.GetScheme(),
 		S4tClient: providerConfig.S4tClient,
-	
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Plugin")
 		os.Exit(1)
