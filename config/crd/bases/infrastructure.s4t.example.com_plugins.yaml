@@ -37,7 +37,6 @@ spec:
           metadata:
             type: object
           spec:
-            description: PluginSpec defines the desired state of Plugin
             properties:
               plugin:
                 description: Foo is an example field of Plugin. Edit plugin_types.go
@@ -48,8 +47,8 @@ spec:
                   name:
                     type: string
                   parameters:
-                    format: byte
-                    type: string
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
                   version:
                     type: string
                 required:

@@ -43,18 +43,6 @@ spec:
                 description: Foo is an example field of Service. Edit service_types.go
                   to remove/update
                 properties:
-                  links:
-                    items:
-                      properties:
-                        href:
-                          type: string
-                        rel:
-                          type: string
-                      required:
-                      - href
-                      - rel
-                      type: object
-                    type: array
                   name:
                     type: string
                   port:
@@ -79,7 +67,7 @@ spec:
               name:
                 type: string
               port:
-                type: string
+                type: integer
               uuid:
                 description: |-
                   INSERT ADDITIONAL STATUS FIELD - define observed state of cluster

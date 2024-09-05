@@ -18,10 +18,9 @@ package controller
 
 import (
 	"context"
-
 	infrastructurev1alpha1 "github.com/MIKE9708/Provider4S4T.git/api/v1alpha1"
-	s4t "github.com/MIKE9708/s4t-sdk-go/pkg"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/plugins"
+	s4t "github.com/MIKE9708/s4t-sdk-go/pkg/api"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/plugin"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -56,6 +55,15 @@ func (r *PluginReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 
 	}
 
+	s4t := s4t.Client{}
+	s4t_client, err := s4t.GetClientConnection()
+
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	r.S4tClient = s4t_client
+
 	if !controllerutil.ContainsFinalizer(pluginCR, boardFinalizer) {
 		controllerutil.AddFinalizer(pluginCR, boardFinalizer)
 		if err := r.Update(ctx, pluginCR); err != nil {
@@ -66,14 +74,14 @@ func (r *PluginReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	if !pluginCR.DeletionTimestamp.IsZero() {
 		return r.ReconcileDelete(ctx, pluginCR)
 	}
-	plugin := &plugins.PluginReq{
+	plugin_data := plugins.PluginReq{
 		Name:       pluginCR.Spec.Plugin.Name,
 		Parameters: pluginCR.Spec.Plugin.Parameters,
 		Code:       pluginCR.Spec.Plugin.Code,
 		Version:    pluginCR.Spec.Plugin.Version,
 	}
-	plugin_data := &plugins.Plugin{}
-	plugin_created, err := plugin_data.CreatePlugin(r.S4tClient, *plugin)
+
+	plugin_created, err := r.S4tClient.CreatePlugin(plugin_data)
 
 	if err != nil {
 		return ctrl.Result{}, err
@@ -91,8 +99,7 @@ func (r *PluginReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 }
 
 func (r *PluginReconciler) ReconcileDelete(ctx context.Context, pluginCR *infrastructurev1alpha1.Plugin) (ctrl.Result, error) {
-	plugin := &plugins.Plugin{UUID: pluginCR.Status.Code}
-	if err := plugin.DeletePlugin(r.S4tClient); err != nil {
+	if err := r.S4tClient.DeletePlugin(pluginCR.Status.Code); err != nil {
 		return ctrl.Result{}, err
 	}
 

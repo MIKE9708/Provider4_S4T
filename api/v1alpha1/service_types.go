@@ -17,12 +17,18 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/services"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+type ServiceData struct {
+	Uuid     string `json:"uuid,omitempty"`
+	Name     string `json:"name"`
+	Project  string `json:"project,omitempty"`
+	Port     uint   `json:"port"`
+	Protocol string `json:"protocol"`
+}
 
 // ServiceSpec defines the desired state of Service
 // +kubebuilder:object:generate=true
@@ -31,7 +37,7 @@ type ServiceSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Service. Edit service_types.go to remove/update
-	Service services.Service `json:"service"`
+	Service ServiceData `json:"service"`
 }
 
 // ServiceStatus defines the observed state of Service
@@ -40,7 +46,7 @@ type ServiceStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 	UUID string `json:"uuid,omitempty"`
 	Name string `json:"name,omitempty"`
-	Port string `json:"port,omitempty"`
+	Port uint   `json:"port,omitempty"`
 }
 
 // +kubebuilder:object:root=true

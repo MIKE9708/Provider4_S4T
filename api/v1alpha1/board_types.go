@@ -17,12 +17,36 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+type BoardData struct {
+	Uuid      string     `json:"uuid,omitempty"`
+	Code      string     `json:"code,omitempty"`
+	Status    string     `json:"status,omitempty"`
+	Name      string     `json:"name,omitempty"`
+	Type      string     `json:"type,omitempty"`
+	Agent     string     `json:"agent,omitempty"`
+	Wstunip   string     `json:"wstun_ip,omitempty"`
+	Session   string     `json:"session,omitempty"`
+	LRversion string     `json:"lr_version,omitempty"`
+	Location  []Location `json:"location"`
+}
+
+type Link struct {
+	Href string `json:"href"`
+	Rel  string `json:"rel"`
+}
+
+type Location struct {
+	Longitude string                 `json:"longitude"`
+	Latitude  string                 `json:"latitude"`
+	Altitude  string                 `json:"altitude"`
+	UpdatedAt []runtime.RawExtension `json:"updated_at"`
+}
 
 // BoardSpec defines the desired state of Board
 // +kubebuilder:object:generate=true
@@ -31,7 +55,7 @@ type BoardSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Board. Edit board_types.go to remove/update
-	Board boards.Board `json:"board"`
+	Board BoardData `json:"board"`
 }
 
 // BoardStatus defines the observed state of Board

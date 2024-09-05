@@ -47,34 +47,6 @@ spec:
                     type: string
                   code:
                     type: string
-                  connectivity:
-                    properties:
-                      iface:
-                        type: string
-                      local_ip:
-                        type: string
-                      mac:
-                        type: string
-                    required:
-                    - iface
-                    - local_ip
-                    - mac
-                    type: object
-                  fleet:
-                    format: byte
-                    type: string
-                  links:
-                    items:
-                      properties:
-                        href:
-                          type: string
-                        rel:
-                          type: string
-                      required:
-                      - href
-                      - rel
-                      type: object
-                    type: array
                   location:
                     items:
                       properties:
@@ -85,8 +57,10 @@ spec:
                         longitude:
                           type: string
                         updated_at:
-                          format: byte
-                          type: string
+                          items:
+                            type: object
+                            x-kubernetes-preserve-unknown-fields: true
+                          type: array
                       required:
                       - altitude
                       - latitude
@@ -95,7 +69,6 @@ spec:
                       type: object
                     type: array
                   lr_version:
-                    description: interface{} `json:"fleet"`
                     type: string
                   name:
                     type: string
@@ -110,16 +83,7 @@ spec:
                   wstun_ip:
                     type: string
                 required:
-                - agent
-                - code
-                - connectivity
                 - location
-                - lr_version
-                - name
-                - session
-                - status
-                - type
-                - uuid
                 type: object
             required:
             - board

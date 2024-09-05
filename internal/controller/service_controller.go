@@ -18,10 +18,9 @@ package controller
 
 import (
 	"context"
-
 	infrastructurev1alpha1 "github.com/MIKE9708/Provider4S4T.git/api/v1alpha1"
-	"github.com/MIKE9708/s4t-sdk-go/pkg"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/services"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/service"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -69,19 +68,19 @@ func (r *ServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return r.ReconcileDelete(ctx, serviceCR)
 	}
 
-	service := &services.Service{
+	service_data := services.Service{
 		Name:     serviceCR.Spec.Service.Name,
 		Port:     serviceCR.Spec.Service.Port,
 		Protocol: serviceCR.Spec.Service.Protocol,
 	}
 
-	service_created, err := service.CreateService(r.S4tClient, *service)
+	service_created, err := r.S4tClient.CreateService(service_data)
 
 	if err != nil {
 		return ctrl.Result{}, err
 	}
 	serviceCR.Status.Name = service_created.Name
-	serviceCR.Status.Port = string(service_created.Port)
+	serviceCR.Status.Port = service_created.Port
 
 	// TODO(user): your logic here
 
@@ -89,8 +88,7 @@ func (r *ServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 }
 
 func (r *ServiceReconciler) ReconcileDelete(ctx context.Context, serviceCR *infrastructurev1alpha1.Service) (ctrl.Result, error) {
-	service := &services.Service{Uuid: serviceCR.Status.UUID}
-	if err := service.DeleteService(r.S4tClient, service.Uuid); err != nil {
+	if err := r.S4tClient.DeleteService(serviceCR.Status.UUID); err != nil {
 		return ctrl.Result{}, err
 	}
 
