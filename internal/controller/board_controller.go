@@ -18,8 +18,6 @@ package controller
 
 import (
 	"context"
-
-	"github.com/MIKE9708/Provider4S4T.git/api/v1alpha1"
 	infrastructurev1alpha1 "github.com/MIKE9708/Provider4S4T.git/api/v1alpha1"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
@@ -98,10 +96,6 @@ func (r *BoardReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 }
 
 func (r *BoardReconciler) ReconcileCreate(ctx context.Context, s4t_client *s4t.Client, boardCR *infrastructurev1alpha1.Board) (ctrl.Result, error) {
-	board := v1alpha1.BoardData{}
-	board.Name = boardCR.Spec.Board.Name
-	board.Code = boardCR.Spec.Board.Code
-	// board.Location = boardCR.Spec.Board.Location
 	board_data := boards.Board{}
 
 	board_data.Name = boardCR.Spec.Board.Name
